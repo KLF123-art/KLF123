@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 食光机 · 智能配菜与食谱推荐</title>
+  <meta name="description" content="输入现有食材和口味偏好，AI 食光机为你智能推荐食谱、分析营养、生成一周菜单。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ 顶部导航 ============ -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#home">
+      <span class="brand-icon">🍳</span>
+      <span>AI 食光机</span>
+    </a>
+    <nav class="nav">
+      <a href="#input">开始配菜</a>
+      <a href="#favorites">我的收藏 <span id="favCount" class="nav-badge">0</span></a>
+      <a href="#about">关于</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ 首页 Hero ============ -->
+<section id="home" class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <span class="hero-tag">✨ AI + 美食 · 今天吃什么，交给食光机</span>
+      <h1>冰箱里的食材，<br>也能变成<span class="accent">一桌好菜</span></h1>
+      <p>勾选你手边的食材、口味和忌口，AI 食光机会像营养师一样为你打分推荐，附上做法、营养分析和购物清单。零基础也能轻松做菜。</p>
+      <div class="hero-actions">
+        <a href="#input" class="btn btn-primary btn-lg">开始配菜 →</a>
+        <a href="#how" class="btn btn-ghost btn-lg">看看怎么用</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong id="statRecipes">25</strong><span>道精选食谱</span></div>
+        <div><strong id="statIngredients">46</strong><span>种常见食材</span></div>
+        <div><strong>4</strong><span>维智能打分</span></div>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="plate">
+        <div class="food food-1">🍅</div>
+        <div class="food food-2">🥦</div>
+        <div class="food food-3">🍳</div>
+        <div class="food food-4">🍜</div>
+      </div>
+      <div class="float-badge badge-1">🥗 低脂</div>
+      <div class="float-badge badge-2">⚡ 15 分钟</div>
+      <div class="float-badge badge-3">⭐ 92% 匹配</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ How it works ============ -->
+<section id="how" class="how">
+  <div class="wrap">
+    <h2 class="section-title">三步，搞定今天吃什么</h2>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-num">1</div><div class="how-icon">🧺</div><h3>勾选食材</h3><p>选出现有的食材、口味偏好和忌口</p></div>
+      <div class="how-card"><div class="how-num">2</div><div class="how-icon">🤖</div><h3>AI 配菜</h3><p>四维打分，推荐最适合你的菜</p></div>
+      <div class="how-card"><div class="how-num">3</div><div class="how-icon">🍽️</div><h3>开做 & 清单</h3><p>看做法、分析营养、导出购物清单</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 食材输入区 ============ -->
+<section id="input" class="input-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">告诉我们你有什么</h2>
+        <p class="section-sub">像填空一样简单，AI 会根据这些信息为你配菜</p>
+      </div>
+      <button id="resetBtn" class="btn btn-ghost btn-sm">↺ 重置选择</button>
+    </div>
+
+    <div class="input-layout">
+      <!-- 左侧：选择控件 -->
+      <div class="panel">
+        <!-- 食材选择 -->
+        <div class="field-block">
+          <div class="field-head">
+            <h3>① 我有的食材 <span class="required">*</span></h3>
+            <span class="field-hint">已选 <b id="selectedCount">0</b> 种</span>
+          </div>
+          <div class="search-box">
+            <span>🔍</span><input type="text" id="ingredientSearch" placeholder="搜索食材，如：鸡蛋">
+          </div>
+          <div id="ingredientGroups" class="ingredient-groups"></div>
+        </div>
+
+        <!-- 口味与难度 -->
+        <div class="field-block">
+          <h3>② 口味与难度</h3>
+          <div class="option-row">
+            <span class="option-label">辣度</span>
+            <div id="spicyOptions" class="chip-row"></div>
+          </div>
+          <div class="option-row">
+            <span class="option-label">口味</span>
+            <div id="flavorOptions" class="chip-row"></div>
+          </div>
+          <div class="option-row">
+            <span class="option-label">难度</span>
+            <div id="difficultyOptions" class="chip-row"></div>
+          </div>
+          <div class="option-row">
+            <span class="option-label">餐次</span>
+            <div id="mealOptions" class="chip-row"></div>
+          </div>
+          <div class="option-row">
+            <span class="option-label">份量</span>
+            <div class="serving-control">
+              <button id="servingMinus" class="step-btn">−</button>
+              <span id="servingValue">2</span><span class="serving-unit">人份</span>
+              <button id="servingPlus" class="step-btn">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 忌口 -->
+        <div class="field-block">
+          <h3>③ 忌口与过敏原</h3>
+          <p class="field-desc">勾选后，含该成分的食谱会被自动排除</p>
+          <div id="restrictionOptions" class="restriction-grid"></div>
+        </div>
+
+        <button id="cookBtn" class="btn btn-primary btn-block btn-lg" disabled>
+          <span class="btn-spark">✨</span> AI 帮我配菜
+        </button>
+        <p id="cookHint" class="cook-hint">请先至少选择 1 种食材</p>
+      </div>
+
+      <!-- 右侧：已选摘要 + 推荐结果 -->
+      <div class="results-col">
+        <div id="selectionSummary" class="summary-card">
+          <h3>📋 我的选择</h3>
+          <div id="summaryBody" class="summary-body"><p class="empty-hint">还没有选择食材，左侧勾选后这里会显示你的偏好摘要。</p></div>
+        </div>
+
+        <!-- 思考动画 -->
+        <div id="thinking" class="thinking hidden">
+          <div class="thinking-robot">🤖</div>
+          <p>AI 营养师正在为你打分配菜…</p>
+          <div class="thinking-bar"><span></span></div>
+        </div>
+
+        <!-- 推荐结果 -->
+        <div id="results" class="results hidden">
+          <div class="results-head">
+            <div>
+              <h3>🍽️ 为你推荐</h3>
+              <p id="resultsMeta" class="results-meta"></p>
+            </div>
+            <button id="shuffleBtn" class="btn btn-ghost btn-sm">🔄 换一批</button>
+          </div>
+          <div id="recipeList" class="recipe-list"></div>
+          <div id="noResult" class="no-result hidden">
+            <div class="no-result-icon">🥲</div>
+            <h3>没有找到合适的菜</h3>
+            <p>试试减少忌口，或再多选几样食材？</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 食谱详情弹窗 ============ -->
+<div id="detailModal" class="modal hidden">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-box">
+    <button class="modal-close" data-close aria-label="关闭">✕</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- ============ 收藏 & 周菜单 ============ -->
+<section id="favorites" class="fav-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">我的收藏 & 一周菜单</h2>
+        <p class="section-sub">收藏喜欢的菜，自动排成一周菜单并生成购物清单</p>
+      </div>
+      <div class="fav-actions">
+        <button id="genWeekBtn" class="btn btn-primary btn-sm">📅 生成一周菜单</button>
+        <button id="clearFavBtn" class="btn btn-ghost btn-sm">清空收藏</button>
+      </div>
+    </div>
+
+    <div id="favEmpty" class="empty-state">
+      <div class="empty-illustration">💛</div>
+      <h3>还没有收藏的食谱</h3>
+      <p>在推荐结果里点击 ♡ 收藏喜欢的菜，就会出现在这里</p>
+      <a href="#input" class="btn btn-primary btn-sm">去配菜</a>
+    </div>
+
+    <div id="favContent" class="hidden">
+      <div id="favGrid" class="fav-grid"></div>
+    </div>
+
+    <div id="weekSection" class="week-section hidden">
+      <div class="week-head">
+        <h3>📅 我的一周菜单</h3>
+        <div>
+          <button id="printBtn" class="btn btn-ghost btn-sm">🖨️ 打印菜单</button>
+          <button id="copyListBtn" class="btn btn-primary btn-sm">📋 复制购物清单</button>
+        </div>
+      </div>
+      <div id="weekGrid" class="week-grid"></div>
+      <div class="nutrition-summary" id="nutritionSummary"></div>
+      <div id="shoppingList" class="shopping-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 关于 ============ -->
+<section id="about" class="about">
+  <div class="wrap about-inner">
+    <div>
+      <h2 class="section-title">关于 AI 食光机</h2>
+      <p>这是一个《人工智能基础与应用》课程大作业。它用前端打分算法模拟"AI 营养师"的决策过程：根据你的食材、口味、忌口，从 25 道食谱中计算匹配度并给出个性化推荐理由。</p>
+      <p>所有数据都保存在你的浏览器本地，无需登录、无需联网，保护隐私。作品为纯静态网页，部署于 GitHub Pages。</p>
+    </div>
+    <div class="about-note">
+      <h4>🛠️ 使用的 AI 工具</h4>
+      <ul>
+        <li>AI 对话助手：需求策划、代码编写、迭代优化</li>
+        <li>推荐算法：四维加权打分 + 硬性过滤规则</li>
+        <li>营养数据：AI 辅助生成的食谱数据集</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 页脚 ============ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <p>🍳 AI 食光机 · 《人工智能基础与应用》课程大作业</p>
+    <p class="footer-small">用 AI 做点好吃的事 · 数据仅存储于本地浏览器</p>
+  </div>
+</footer>
+
+<!-- Toast 提示 -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- 打印区域容器 -->
+<div id="printArea" class="print-only"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
